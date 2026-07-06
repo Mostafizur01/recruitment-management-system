@@ -47,7 +47,7 @@ export default function Register() {
             type="email"
             placeholder="Email"
             onChange={(e) =>
-              setFormData({ ...formData, fastName: e.target.value })
+              setFormData({ ...formData, email: e.target.value })
             }
             required
           />
@@ -56,7 +56,7 @@ export default function Register() {
             type="password"
             placeholder="Password"
             onChange={(e) =>
-              setFormData({ ...formData, fastName: e.target.value })
+              setFormData({ ...formData, password: e.target.value })
             }
             required
           />

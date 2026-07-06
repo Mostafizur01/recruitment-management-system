@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
 
@@ -9,6 +9,11 @@ export default function Sidebar({
   setMobileMenuOpen,
 }) {
   const { user, logOut, token } = useContext(LogAndRegContext);
+  const  navigate = useNavigate()
+
+  const mmrHeandel = ()=> {
+    navigate('/')
+  }
 
   return (
     <>
@@ -29,7 +34,8 @@ export default function Sidebar({
       >
         <div className="p-6 border-b border-slate-700">
           <div
-            className={`${isOpen ? "text-4xl" : "text-sm"} transition-all duration-300 font-bold text-center`}
+            className={`${isOpen ? "text-4xl" : "text-sm"} hover:cursor-pointer hover:text-blue-500 transition-all duration-300 font-bold text-center`}
+            onClick={mmrHeandel}
           >
             MMR
           </div>
@@ -39,7 +45,7 @@ export default function Sidebar({
           <SidebarLink to="/" icon="📊" label="Dashboard" isOpen={isOpen} />
           <SidebarLink to="/my-cvs" icon="📄" label="My CVs" isOpen={isOpen} />
           <SidebarLink
-            to="/positions"
+            to="/positions/list"
             icon="💼"
             label="Positions"
             isOpen={isOpen}
@@ -90,7 +96,7 @@ function SidebarLink({ to, icon, label, isOpen }) {
   return (
     <Link
       to={to}
-      className="flex items-center p-2 rounded hover:bg-slate-800 transition-all"
+      className="flex items-center p-2 rounded hover:bg-slate-800 hover:text-blue-500 transition-all"
     >
       <span className="text-xl">{icon}</span>
       <span
