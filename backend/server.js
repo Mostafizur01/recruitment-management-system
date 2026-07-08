@@ -1,8 +1,13 @@
+// dotenv config
+import dotenv from "dotenv";
+dotenv.config();
+
+
 // all the libary
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
+
 
 // all the  router
 import mongoDB from "./config/db.js";
@@ -16,7 +21,6 @@ import applicationRoutes from "./routes/applicationRoutes.js";
 const app = express();
 const port = process.env.PORT || 3000;
 
-dotenv.config();
 mongoDB();
 
 app.use(express.json());
@@ -25,6 +29,9 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"], 
   credentials: true 
 }));
+
+
+
 app.use("/logReg", logRegRoutes);
 app.use("/position", positionRoutes);
 app.use("/cvs", cvRoutes);
