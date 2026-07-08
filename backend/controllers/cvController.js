@@ -3,6 +3,9 @@ import CV from "../models/cv.js";
 export const getCandidateCv = async (req, res) => {
   try {
     const cv = await CV.findOne({ candidate: req.params.candidateId });
+    if (!cv) {
+      return res.status(404).json({ message: "CV not found for this candidate" });
+    }
     res.json(cv);
   } catch (error) {
     console.log("the error is on getCandidateCV");

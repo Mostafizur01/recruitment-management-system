@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    fastName: {
+    firstName: {
       type: String,
       required: true,
     },

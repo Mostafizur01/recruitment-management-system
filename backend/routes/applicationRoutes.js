@@ -1,33 +1,28 @@
 import express from "express";
 import {
-  createPosition,
-  allPosition,
-  updatePosition,
-  deletePosition,
-} from "../controllers/positionController.js";
+  getAllApplications,
+  createApplication,
+  updateApplication,
+  deleteApplication,
+} from "../controllers/applicationController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { verifyRole } from "../middleware/verifyRole.js";
 
 const router = express.Router();
 
-router.get("/", allPosition);
-router.post(
-  "/",
-  verifyToken,
-  verifyRole(["Admin", "Recruiter"]),
-  createPosition,
-);
+router.get("/", getAllApplications);
+router.post("/", verifyToken, createApplication);
 router.put(
   "/:id",
   verifyToken,
   verifyRole(["Admin", "Recruiter"]),
-  updatePosition,
+  updateApplication,
 );
 router.delete(
   "/:id",
   verifyToken,
   verifyRole(["Admin", "Recruiter"]),
-  deletePosition,
+  deleteApplication,
 );
 
 export default router;

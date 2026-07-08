@@ -9,11 +9,11 @@ export default function Sidebar({
   setMobileMenuOpen,
 }) {
   const { user, logOut, token } = useContext(LogAndRegContext);
-  const  navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const mmrHeandel = ()=> {
-    navigate('/')
-  }
+  const handleMobileMenuClick = () => {
+    navigate("/");
+  };
 
   return (
     <>
@@ -35,7 +35,7 @@ export default function Sidebar({
         <div className="p-6 border-b border-slate-700">
           <div
             className={`${isOpen ? "text-4xl" : "text-sm"} hover:cursor-pointer hover:text-blue-500 transition-all duration-300 font-bold text-center`}
-            onClick={mmrHeandel}
+            onClick={handleMobileMenuClick}
           >
             MMR
           </div>
@@ -43,11 +43,23 @@ export default function Sidebar({
 
         <nav className="flex-1 p-4 space-y-4">
           <SidebarLink to="/" icon="📊" label="Dashboard" isOpen={isOpen} />
-          <SidebarLink to="/my-cvs" icon="📄" label="My CVs" isOpen={isOpen} />
+          <SidebarLink to="/my-cv" icon="📄" label="My CVs" isOpen={isOpen} />
           <SidebarLink
             to="/positions/list"
             icon="💼"
             label="Positions"
+            isOpen={isOpen}
+          />
+          <SidebarLink
+            to="/applications/"
+            icon="📝"
+            label="Applications"
+            isOpen={isOpen}
+          />
+          <SidebarLink
+            to="/applications/list"
+            icon="📋"
+            label="Applications List"
             isOpen={isOpen}
           />
         </nav>

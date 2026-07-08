@@ -1,6 +1,6 @@
-import Position from "../models/positionl.js";
+import Position from "../models/position.js";
 
-export const createPositon = async (req, res) => {
+export const createPosition = async (req, res) => {
   try {
     const position = new Position(req.body);
     await position.save();

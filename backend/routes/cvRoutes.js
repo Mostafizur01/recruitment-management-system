@@ -9,8 +9,8 @@ import { verifyRole } from "../middleware/verifyRole.js";
 
 const router = express.Router();
 
-router.get("/:candidateId", verifyToken, getCandidateCv);
-router.put("/:candidateId", verifyToken, updateCV);
 router.get("/", verifyToken, verifyRole(["Admin", "Recruiter"]), getAllCVs);
+router.get("/:candidateId", verifyToken, getCandidateCv);
+router.put("/update/:candidateId", verifyToken, updateCV);
 
 export default router;

@@ -1,14 +1,14 @@
 import Application from "../models/application.js";
-import Position from "../models/positionl.js";
+import Position from "../models/position.js";
 import CV from "../models/cv.js";
 import Activity from "../models/activity.js";
 
 export const getDashboardStats = async (req, res) => {
   try {
-    const allAplication = await Application.countDocuments();
-    const openPosition = await Position.countDocuments({ status: "Open" });
-    const cvs = await CV.countDocuments({ status: "Pending" });
-    const recentActivity = await Activity.find()
+    const totalApplications = await Application.countDocuments();
+    const openPositions = await Position.countDocuments({ status: "Active" });
+    const pendingCVs = await CV.countDocuments({ status: "Pending" });
+    const recentActivities = await Activity.find()
       .sort({ createdAt: -1 })
       .limit(5);
     res.status(200).json({

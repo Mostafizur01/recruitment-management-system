@@ -11,7 +11,7 @@ export default function AddPositionModal({ isOpen, onClose, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetchApi("/positions/add", {
+      await fetchApi("/position", {
         method: "POST",
         body: JSON.stringify(formData),
       });

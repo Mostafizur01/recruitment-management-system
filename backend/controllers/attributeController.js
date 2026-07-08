@@ -7,7 +7,7 @@ export const createAttribute = async (req, res) => {
     return res.json(attr);
   } catch (error) {
     console.log(
-      "teprom is on the createAttribute on attributeController file",
+      "problem is on the createAttribute on attributeController file",
       error,
     );
   }
@@ -19,7 +19,7 @@ export const getAttribute = async (req, res) => {
     return res.json(attrs);
   } catch (error) {
     console.log(
-      "teprom is on the getAttribute on attributeController file",
+      "problem is on the getAttribute on attributeController file",
       error,
     );
   }

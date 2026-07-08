@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    const { fastName, lastName, email, password, role, location } = req.body;
+    const { firstName, lastName, email, password, role, location } = req.body;
     const hashPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
-      fastName,
+      firstName,
       lastName,
       email,
       password: hashPassword,
@@ -15,9 +15,9 @@ export const register = async (req, res) => {
       location,
     });
     await newUser.save();
-    res.status(201).json({ message: "Register succesefuly" });
+    res.status(201).json({ message: "Register successfully" });
   } catch (error) {
-    console.log("the porbelm on register logic: ", error);
+    console.log("the problem on register logic: ", error);
   }
 };
 
