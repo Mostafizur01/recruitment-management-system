@@ -23,16 +23,29 @@ mongoDB();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin:
-      process.env.FRONTEND_URL ||
-      "http://localhost:5173" ||
-      "https://recruitment-management-system-1-id3s.onrender.com",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  }),
-);
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_RENDER,
+  "http://localhost:5173",
+  "https://recruitment-management-system-1-id3s.onrender.com",
+].filter(Boolean);
+
+const corsOptions = {
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+};
+
+if (allowedOrigins.length > 0) {
+  corsOptions.origin = (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error("CORS policy does not allow this origin."));
+  };
+} else {
+  corsOptions.origin = true;
+}
+
+app.use(cors(corsOptions));
 
 app.use("/logReg", logRegRoutes);
 app.use("/position", positionRoutes);
