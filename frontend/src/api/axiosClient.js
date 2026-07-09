@@ -1,9 +1,6 @@
 import axios from "axios";
 
-const apiBase =
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.URL_API_BASE ||
-  (import.meta.env.PROD ? window.location.origin : "http://localhost:3000");
+const apiBase = import.meta.env.VITE_API_BASE_URL || "https://recruitment-management-system-0wtk.onrender.com";
 
 const apiClient = axios.create({
   baseURL: apiBase,
