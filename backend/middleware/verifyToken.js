@@ -7,8 +7,13 @@ export const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: "Authorization token required" });
   }
 
+  const jwtSecret = process.env.JWT_SECRET || process.env.KEY;
+  if (!jwtSecret) {
+    return res.status(500).json({ message: "JWT secret not configured" });
+  }
+
   try {
-    const verified = jwt.verify(token, process.env.KEY);
+    const verified = jwt.verify(token, jwtSecret);
     req.user = verified;
     next();
   } catch (error) {

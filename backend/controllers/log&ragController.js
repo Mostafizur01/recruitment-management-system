@@ -71,7 +71,12 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.KEY, {
+    const jwtSecret = process.env.KEY;
+    if (!jwtSecret) {
+      return res.status(500).json({ message: "JWT secret not configured" });
+    }
+
+    const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, {
       expiresIn: "7d",
     });
 
