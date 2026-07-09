@@ -7,20 +7,29 @@ export const getDashboardStats = async (req, res) => {
   try {
     const totalApplications = await Application.countDocuments();
     const openPositions = await Position.countDocuments({ status: "Active" });
-    const pendingCVs = await CV.countDocuments({ status: "Pending" });
+    const active = await Position.countDocuments({ status: "Active" });
+    const closed = await Position.countDocuments({ status: "Closed" });
+    const newAppsToday = await Application.countDocuments({
+      appliedAt: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+      },
+    });
     const recentActivities = await Activity.find()
       .sort({ createdAt: -1 })
       .limit(5);
-    res.status(200).json({
+    return res.status(200).json({
       stats: {
         totalApplications,
         openPositions,
-        pendingCVs,
+        pendingCVs: 0,
+        active,
+        closed,
+        newAppsToday,
       },
       recentActivities,
     });
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Dashboard data fetch failed", error: error.message });
   }

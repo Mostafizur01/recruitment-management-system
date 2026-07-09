@@ -24,7 +24,10 @@ export default function CVList() {
           <tbody>
             {cvs.map((cv) => (
               <tr key={cv._id} className="border-b">
-                <td className="p-4">{cv.candidateId?.name || "N/A"}</td>
+                <td className="p-4">
+                  {cv.candidateId?.firstName || ""}{" "}
+                  {cv.candidateId?.lastName || ""}
+                </td>
                 <td className="p-4">{cv.version}</td>
                 <td className="p-4">
                   <Link

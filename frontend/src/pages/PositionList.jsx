@@ -13,21 +13,12 @@ export default function PositionList() {
   });
 
   const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  const isAuthorized = user?.role === "admin" || user?.role === "leader";
-
-  useEffect(() => {
-    const loadPositions = async () => {
-      try {
-        const data = await fetchApi("/position");
-        setPositions(data);
-      } catch (error) {
-        console.error("Failed to load positions:", error);
-      }
-    };
-    loadPositions();
-  }, []);
+  const storedUser =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
+  const userRole = storedUser?.role?.toLowerCase();
+  const isAuthorized = ["admin", "recruiter", "leader"].includes(userRole);
 
   const loadPositions = async () => {
     try {
@@ -37,6 +28,10 @@ export default function PositionList() {
       console.error("Failed to load positions:", error);
     }
   };
+
+  useEffect(() => {
+    loadPositions();
+  }, []);
 
   const handleAddPosition = async (e) => {
     e.preventDefault();

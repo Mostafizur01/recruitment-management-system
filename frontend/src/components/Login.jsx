@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
-import { fetchApi } from "../api/fetch";
+import { fetchApi } from "../api/fetch.js";
 import { useNavigate, Link } from "react-router-dom";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const { setUser, setToken } = useContext(LogAndRegContext);
+  const { login } = useContext(LogAndRegContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,11 +16,13 @@ export default function Login() {
         body: JSON.stringify(formData),
       });
 
-      localStorage.setItem("token", res.token);
-      setToken(res.token);
-      setUser(res.user);
-
-      navigate("/");
+      login(res.user, res.token);
+      const role = res.user?.role?.toLowerCase();
+      if (role === "candidate") {
+        navigate("/");
+      } else {
+        navigate("/positions/list");
+      }
     } catch (err) {
       alert("Login Failed: " + err.message);
     }

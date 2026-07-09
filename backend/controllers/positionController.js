@@ -19,6 +19,20 @@ export const allPosition = async (req, res) => {
   }
 };
 
+export const getPositionById = async (req, res) => {
+  try {
+    const position = await Position.findById(req.params.id).populate(
+      "requiredAttributes",
+    );
+    if (!position) {
+      return res.status(404).json({ message: "Position not found" });
+    }
+    return res.json(position);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const updatePosition = async (req, res) => {
   try {
     const updatedPosition = await Position.findByIdAndUpdate(
@@ -26,6 +40,9 @@ export const updatePosition = async (req, res) => {
       req.body,
       { new: true },
     );
+    if (!updatedPosition) {
+      return res.status(404).json({ message: "Position not found" });
+    }
     res.status(200).json(updatedPosition);
   } catch (error) {
     res.status(500).json({ message: error.message });

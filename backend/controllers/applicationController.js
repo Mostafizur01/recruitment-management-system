@@ -14,12 +14,21 @@ export const getAllApplications = async (req, res) => {
 
 export const createApplication = async (req, res) => {
   try {
-    const application = new Application(req.body);
+    const { applicantName, email, resumeLink } = req.body;
+    const application = new Application({
+      userId: req.user.id,
+      positionId: req.params.positionId,
+      applicantName,
+      email,
+      resumeLink,
+    });
     await application.save();
-    res.status(201).json(application);
+    return res.status(201).json(application);
   } catch (error) {
     console.error("problem on createApplication", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 

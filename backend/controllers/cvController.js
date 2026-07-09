@@ -2,13 +2,28 @@ import CV from "../models/cv.js";
 
 export const getCandidateCv = async (req, res) => {
   try {
-    const cv = await CV.findOne({ candidate: req.params.candidateId });
+    const candidateId = req.params.candidateId;
+    const cv = await CV.findOne({ candidateId });
     if (!cv) {
-      return res.status(404).json({ message: "CV not found for this candidate" });
+      return res
+        .status(404)
+        .json({ message: "CV not found for this candidate" });
     }
-    res.json(cv);
+
+    const userRole = String(req.user.role).toLowerCase();
+    const isOwner = req.user.id === candidateId;
+    const isAdmin = ["admin", "recruiter", "leader"].includes(userRole);
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Forbidden to access this CV" });
+    }
+
+    return res.json(cv);
   } catch (error) {
-    console.log("the error is on getCandidateCV");
+    console.error("the error is on getCandidateCV", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
@@ -22,6 +37,13 @@ export const updateCV = async (req, res) => {
       return res.status(404).json({ message: "CV not found" });
     }
 
+    const userRole = String(req.user.role).toLowerCase();
+    const isOwner = req.user.id === candidateId;
+    const isAdmin = ["admin", "recruiter", "leader"].includes(userRole);
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Forbidden to update this CV" });
+    }
+
     if (cv.version !== version) {
       return res
         .status(409)
@@ -33,10 +55,12 @@ export const updateCV = async (req, res) => {
 
     await cv.save();
 
-    res.status(200).json({ message: "CV updated successfully", cv });
+    return res.status(200).json({ message: "CV updated successfully", cv });
   } catch (error) {
     console.error("the problem is on cvController", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 

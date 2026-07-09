@@ -2,22 +2,22 @@ import { useState, useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
 import AddPositionModal from "../components/AddPosition";
-import Sidebar from '../components/Sidebar.jsx'
+import Sidebar from "../components/Sidebar.jsx";
 
 export default function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const { user, token, logOut } = useContext(LogAndRegContext);
   const navigate = useNavigate();
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar 
-        isOpen={isOpen} 
-        setIsOpen={setIsOpen} 
-        mobileMenuOpen={mobileMenuOpen} 
-        setMobileMenuOpen={setMobileMenuOpen} 
+      <Sidebar
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -29,7 +29,7 @@ export default function DashboardLayout() {
             ☰
           </button>
           <h2 className="text-lg font-semibold">
-            {token && user ? `Welcome, ${user?.fastName}` : "Welcome"}
+            {token && user ? `Welcome, ${user.firstName || "User"}` : "Welcome"}
           </h2>
           <button
             onClick={() => {

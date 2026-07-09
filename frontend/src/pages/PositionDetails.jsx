@@ -1,22 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchApi } from "../api/fetch.js";
 import { ArrowLeft, Edit, Clock, Tag } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { LogAndRegContext } from "../hooks/logAndRegContextValue.js";
 
 export default function PositionDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(LogAndRegContext);
   const [data, setData] = useState(null);
 
+  const userRole = user?.role?.toLowerCase();
+  const canEdit = ["admin", "recruiter", "leader"].includes(userRole);
+  const canApply = userRole === "candidate";
+
   useEffect(() => {
-    fetchApi(`/positions/${id}`).then(setData);
+    fetchApi(`/position/${id}`)
+      .then(setData)
+      .catch((error) => {
+        console.error("Unable to load position details:", error);
+      });
   }, [id]);
 
   if (!data)
     return (
       <div className="p-8">
-        {" "}
         <LoadingSpinner />
       </div>
     );
@@ -31,14 +40,26 @@ export default function PositionDetails() {
       </button>
 
       <div className="bg-white p-8 rounded-2xl shadow-sm border">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-4">
           <h1 className="text-3xl font-bold text-slate-900">{data.title}</h1>
-          <button
-            onClick={() => navigate(`/positions/edit/${id}`)}
-            className="bg-blue-50 text-blue-600 p-2 rounded-lg"
-          >
-            <Edit size={20} />
-          </button>
+          <div className="flex flex-wrap gap-2">
+            {canApply && (
+              <button
+                onClick={() => navigate(`/applications/apply/${id}`)}
+                className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg"
+              >
+                Apply
+              </button>
+            )}
+            {canEdit && (
+              <button
+                onClick={() => navigate(`/positions/edit/${id}`)}
+                className="bg-blue-50 text-blue-600 p-2 rounded-lg"
+              >
+                <Edit size={20} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-4 mt-4 mb-8">

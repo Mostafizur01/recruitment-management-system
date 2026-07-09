@@ -1,27 +1,33 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useMemo } from "react";
 import { debounce } from "lodash";
 import { fetchApi } from "../api/fetch.js";
 
 export const useAutoSave = (data, endpoint, onConflict) => {
-  const save = useCallback(
+  const debouncedSave = useMemo(
     () =>
       debounce(async (currentData) => {
+        if (!currentData) return;
         try {
           await fetchApi(endpoint, {
             method: "PUT",
             body: JSON.stringify(currentData),
           });
         } catch (err) {
-          if (err.message.includes("409") || err.message.includes("Conflict")) {
+          const message = String(err.message || "");
+          if (
+            message.includes("409") ||
+            message.toLowerCase().includes("conflict")
+          ) {
             onConflict();
           }
         }
       }, 2000),
-    [endpoint],
+    [endpoint, onConflict],
   );
 
   useEffect(() => {
-    save(data);
-    return () => save.cancel();
-  }, [data, save]);
+    if (!data) return;
+    debouncedSave(data);
+    return () => debouncedSave.cancel();
+  }, [data, debouncedSave]);
 };

@@ -43,25 +43,31 @@ export default function Sidebar({
 
         <nav className="flex-1 p-4 space-y-4">
           <SidebarLink to="/" icon="📊" label="Dashboard" isOpen={isOpen} />
-          <SidebarLink to="/my-cv" icon="📄" label="My CVs" isOpen={isOpen} />
+          {user?.role?.toLowerCase() === "candidate" && (
+            <SidebarLink to="/my-cv" icon="📄" label="My CV" isOpen={isOpen} />
+          )}
           <SidebarLink
             to="/positions/list"
             icon="💼"
             label="Positions"
             isOpen={isOpen}
           />
-          <SidebarLink
-            to="/applications/"
-            icon="📝"
-            label="Applications"
-            isOpen={isOpen}
-          />
-          <SidebarLink
-            to="/applications/list"
-            icon="📋"
-            label="Applications List"
-            isOpen={isOpen}
-          />
+          {user?.role?.toLowerCase() !== "candidate" && (
+            <SidebarLink
+              to="/applications/list"
+              icon="📋"
+              label="Applications List"
+              isOpen={isOpen}
+            />
+          )}
+          {user?.role?.toLowerCase() !== "candidate" && (
+            <SidebarLink
+              to="/cvs"
+              icon="📄"
+              label="Candidate CVs"
+              isOpen={isOpen}
+            />
+          )}
         </nav>
 
         {token ? (
@@ -81,7 +87,9 @@ export default function Sidebar({
               {isOpen && (
                 <div className="overflow-hidden">
                   <p className="text-sm font-semibold truncate">
-                    {user?.fastName || "User"}
+                    {user?.firstName
+                      ? `${user.firstName} ${user.lastName || ""}`
+                      : "User"}
                   </p>
                   <p className="text-xs text-gray-400 truncate">
                     {user?.email || "No email"}
@@ -112,7 +120,7 @@ function SidebarLink({ to, icon, label, isOpen }) {
     >
       <span className="text-xl">{icon}</span>
       <span
-        className={`${isOpen ? "block" : "hidden md:hidden"} ml-3 whitespace-nowrap`}
+        className={`${isOpen ? "block" : "hidden md:block"} ml-3 whitespace-nowrap`}
       >
         {label}
       </span>

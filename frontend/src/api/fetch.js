@@ -1,19 +1,25 @@
-const apiBase = import.meta.env.URL_API_BASE || 'http://localhost:3000';
+import apiClient from "./axiosClient.js";
 
-export const fetchApi = async (endpoint, options) => {
-    const token = localStorage.getItem('token')
-    const headers = {
-        'Content-Type': 'application/json',
-        ...(token&& {'Authorization': `Bearer ${token}`}),
-        ...options?.headers
+export const fetchApi = async (endpoint, options = {}) => {
+  try {
+    const config = {
+      url: endpoint,
+      ...options,
+    };
+
+    if (config.body) {
+      config.data = config.body;
+      delete config.body;
     }
-    const response = await fetch(`${apiBase}${endpoint}`, {
-        ...options,
-        headers,
-    })
-    if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'An error occurred while fetching data.')
-    }
-    return response.json()
-}
+
+    const response = await apiClient(config);
+    return response.data;
+  } catch (error) {
+    const message =
+      error.response?.data?.message ||
+      error.response?.statusText ||
+      error.message ||
+      "An error occurred while fetching data.";
+    throw new Error(message, { cause: error });
+  }
+};
