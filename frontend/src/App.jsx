@@ -20,7 +20,7 @@ import Profile from "./pages/Profile.jsx";
 import Unauthorized from "./pages/Unauthorized.jsx";
 
 // Auth Components
-import ProtectedRoute from "./hooks/ProtectedRoute.js";
+import ProtectedRoute from "./hooks/ProtectedRoute.jsx";
 import RoleRoute from "./components/RoleRoute.jsx";
 
 export default function App() {
