@@ -11,17 +11,26 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetchApi("/logReg/login", {
+      const response = await fetchApi("/logReg/login", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData),
       });
 
-      login(res.user, res.token);
-      const role = res.user?.role?.toLowerCase();
-      if (role === "candidate") {
-        navigate("/");
+      const res = await response.json();
+
+      if (res && res.token) {
+        login(res.user, res.token);
+        const role = res.user?.role?.toLowerCase();
+        if (role === "candidate") {
+          navigate("/");
+        } else {
+          navigate("/positions/list");
+        }
       } else {
-        navigate("/positions/list");
+        alert("Login Failed: ", res.message);
       }
     } catch (err) {
       alert("Login Failed: " + err.message);
