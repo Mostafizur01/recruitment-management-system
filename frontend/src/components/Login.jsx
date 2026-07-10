@@ -13,13 +13,20 @@ export default function Login() {
     try {
       const res = await fetchApi("/logReg/login", {
         method: "POST",
-        body: formData, 
+        body: formData,
       });
+
+      if (!res) {
+        throw new Error("No response from server");
+      }
+      if (!res.user) {
+        navigate("/register");
+      }
 
       if (res && res.token) {
         login(res.user, res.token);
         const role = res.user?.role?.toLowerCase();
-        
+
         if (role === "candidate") {
           navigate("/");
         } else {

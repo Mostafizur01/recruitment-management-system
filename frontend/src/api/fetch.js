@@ -1,19 +1,8 @@
-const getApiBase = () => {
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
-  }
-
-  if (
-    typeof window !== "undefined" &&
-    window.location.hostname === "localhost"
-  ) {
-    return "http://localhost:3000";
-  }
-
-  return "https://recruitment-management-system-0wtk.onrender.com";
-};
-
-const apiBase = getApiBase();
+const apiBase =
+  import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.BACKEND_URL ||
+  "http://localhost:3000";
 
 const buildUrl = (endpoint) => {
   if (!endpoint) return apiBase;
