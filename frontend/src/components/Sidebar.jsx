@@ -85,7 +85,7 @@ export default function Sidebar({
                 )}
               </div>
               {isOpen && (
-                <div className="overflow-hidden">
+                <div className="overflow-hidden duration-300">
                   <p className="text-sm font-semibold truncate">
                     {user?.firstName
                       ? `${user.firstName} ${user.lastName || ""}`
@@ -103,7 +103,7 @@ export default function Sidebar({
               className="flex items-center w-full p-2 text-red-400 hover: hover:bg-slate-800 hover:cursor-pointer rounded transition-all"
             >
               <span className="text-xl">↪️</span>
-              {isOpen && <span className="ml-3">Logout</span>}
+              {isOpen && <span className="ml-3 duration-300">Logout</span>}
             </button>
           </div>
         ) : null}
@@ -120,7 +120,7 @@ function SidebarLink({ to, icon, label, isOpen }) {
     >
       <span className="text-xl">{icon}</span>
       <span
-        className={`${isOpen ? "block" : "hidden md:block"} ml-3 whitespace-nowrap`}
+        className={`${isOpen ? "block" : "hidden md:block text-transparent duration-300"} ml-3 whitespace-nowrap`}
       >
         {label}
       </span>

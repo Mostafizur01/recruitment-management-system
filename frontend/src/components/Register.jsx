@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 export default function Register() {
   const [formData, setFormData] = useState({
     fastName: "",
+    lastName: "",
     email: "",
     password: "",
   });
@@ -36,9 +37,18 @@ export default function Register() {
           <input
             className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             type="text"
-            placeholder="Full Name"
+            placeholder="First Name"
             onChange={(e) =>
-              setFormData({ ...formData, fastName: e.target.value })
+              setFormData({ ...formData, firstName: e.target.value })
+            }
+            required
+          />
+          <input
+            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            type="text"
+            placeholder="Last Name"
+            onChange={(e) =>
+              setFormData({ ...formData, lastName: e.target.value })
             }
             required
           />

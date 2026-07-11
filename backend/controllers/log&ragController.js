@@ -57,36 +57,33 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User account not found" });
+      return res.status(404).json({ success: false, message: "User account not found" });
     }
 
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (!passwordMatches) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid password" });
+      return res.status(401).json({ success: false, message: "Invalid password" });
     }
 
     const jwtSecret = process.env.KEY;
     if (!jwtSecret) {
-      return res.status(500).json({ message: "JWT secret not configured" });
+      throw new Error("JWT secret not configured");
     }
 
     const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, {
       expiresIn: "7d",
     });
 
-    const { password: _password, ...safeUser } = user.toObject();
-    return res.status(200).json({ token, user: safeUser });
+    const userObj = user.toObject ? user.toObject() : user;
+    delete userObj.password; 
+
+    return res.status(200).json({ token, user: userObj });
   } catch (error) {
-    console.error("the problem on login logic:", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    console.error("Login Error:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 

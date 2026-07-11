@@ -17,39 +17,23 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.BACKEND_URL,
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-  "https://recruitment-management-system-1-id3s.onrender.com",
-  "https://recruitment-management-system-0wtk.onrender.com",
-].filter(Boolean);
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      origin.startsWith("http://localhost:") ||
-      origin.startsWith("http://127.0.0.1:")
-    ) {
-      callback(null, true);
-      return;
-    }
-    callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+  origin:
+    process.env.FRONTEND_URL ||
+    "https://recruitment-management-system-1-id3s.onrender.com" ||
+    process.env.FRONTEND_URL_LOCAL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  Credentials: true,
 };
+
+app.use(cors(corsOptions));
 
 mongoDB();
 
-app.use(morgan("dev"));
 app.use(express.json());
+app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 

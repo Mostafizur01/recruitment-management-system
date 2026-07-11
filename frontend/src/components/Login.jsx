@@ -1,4 +1,4 @@
-import { useState, useContext} from "react";
+import { useState, useContext } from "react";
 import { fetchApi } from "../api/fetch.js";
 import { useNavigate, Link } from "react-router-dom";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
@@ -11,24 +11,17 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetchApi("/logReg/login", {
+      const res = await fetchApi("/logReg/login", {
         method: "POST",
-        Headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formData, 
       });
-      console.log("Login response:", response);
-      if (response && response.token) {
-        login(response.token);
-        navigate("/dashboard");
-      } else {
-        navigate("/login");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
+
+      login(res.user, res.token);
+      navigate(res.user?.role?.toLowerCase() === "candidate" ? "/" : "/positions/list");
+    } catch (err) {
+      alert(err.message); 
     }
-  };
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">

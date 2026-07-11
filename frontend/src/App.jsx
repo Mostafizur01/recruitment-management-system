@@ -1,12 +1,11 @@
 import { LogAndRegProvider } from "./context/logAndRegContext.jsx";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 
-// Components
+// Components & Pages
 import DashboardLayout from "./layout/DashboardLayout.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
-
-// Pages
+import Unauthorized from "./pages/Unauthorized.jsx";
 import DashboardHome from "./pages/Dashboard.jsx";
 import PositionList from "./pages/PositionList.jsx";
 import PositionDetails from "./pages/PositionDetails.jsx";
@@ -17,9 +16,8 @@ import CVList from "./pages/CVList.jsx";
 import CVEdit from "./pages/CVEdit.jsx";
 import MyCV from "./pages/MyCV.jsx";
 import Profile from "./pages/Profile.jsx";
-import Unauthorized from "./pages/Unauthorized.jsx";
 
-// Auth Components
+// Auth Hooks
 import ProtectedRoute from "./hooks/ProtectedRoute.jsx";
 import RoleRoute from "./components/RoleRoute.jsx";
 
@@ -28,10 +26,12 @@ export default function App() {
     <BrowserRouter>
       <LogAndRegProvider>
         <Routes>
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
+          {/* Protected Routes */}
           <Route
             path="/"
             element={
@@ -42,6 +42,7 @@ export default function App() {
           >
             <Route index element={<DashboardHome />} />
 
+            {/* Position Routes */}
             <Route path="positions/list" element={<PositionList />} />
             <Route path="positions/:id" element={<PositionDetails />} />
             <Route
@@ -53,10 +54,8 @@ export default function App() {
               }
             />
 
-            <Route
-              path="applications/apply/:positionId"
-              element={<Application />}
-            />
+            {/* Application Routes */}
+            <Route path="applications/apply/:positionId" element={<Application />} />
             <Route
               path="applications/list"
               element={
@@ -66,6 +65,7 @@ export default function App() {
               }
             />
 
+            {/* CV & Profile Routes */}
             <Route path="my-cv" element={<MyCV />} />
             <Route path="profile/me" element={<Profile />} />
             <Route
@@ -76,8 +76,18 @@ export default function App() {
                 </RoleRoute>
               }
             />
-            <Route path="cvs/edit/:candidateId" element={<CVEdit />} />
+            <Route 
+              path="cvs/edit/:candidateId" 
+              element={
+                <RoleRoute allowedRoles={["admin", "recruiter"]}>
+                  <CVEdit />
+                </RoleRoute>
+              } 
+            />
           </Route>
+
+          {/* Catch all redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </LogAndRegProvider>
     </BrowserRouter>
