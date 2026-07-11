@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext} from "react";
 import { fetchApi } from "../api/fetch.js";
 import { useNavigate, Link } from "react-router-dom";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
@@ -11,30 +11,22 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetchApi("/logReg/login", {
+      const response = await fetchApi("/logReg/login", {
         method: "POST",
-        body: formData,
+        Headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-
-      if (!res) {
-        throw new Error("No response from server");
+      console.log("Login response:", response);
+      if (response && response.token) {
+        login(response.token);
+        navigate("/dashboard");
+      } else {
+        navigate("/login");
       }
-      if (!res.user) {
-        navigate("/register");
-      }
-
-      if (res && res.token) {
-        login(res.user, res.token);
-        const role = res.user?.role?.toLowerCase();
-
-        if (role === "candidate") {
-          navigate("/");
-        } else {
-          navigate("/positions/list");
-        }
-      }
-    } catch (err) {
-      alert("Login Failed: " + err.message);
+    } catch (error) {
+      console.error("Error during login:", error);
     }
   };
 

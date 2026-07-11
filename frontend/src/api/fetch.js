@@ -1,72 +1,26 @@
-const apiBase =
-  import.meta.env.VITE_BACKEND_URL ||
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.BACKEND_URL ||
-  "http://localhost:3000";
-
-const buildUrl = (endpoint) => {
-  if (!endpoint) return apiBase;
-  if (/^https?:\/\//i.test(endpoint)) return endpoint;
-  return `${apiBase}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+const fetchOptions = {
+  origin:
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://recruitment-management-system-backend-5zc4.onrender.com",
+  method: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  Credentials: true,
 };
 
-export const fetchApi = async (endpoint, options = {}) => {
-  try {
-    const { body, headers: customHeaders, ...rest } = options;
-    const headers = new Headers(customHeaders || {});
-    const hasBody = body !== undefined && body !== null;
+export const fetchApi = async (url, options = {}) => {
+  const fetchUrl = `${fetchOptions.origin}${url}`;
+  const fetchOptionsWithHeaders = {
+    ...fetchOptions,
+    ...options,
+    Headers: {
+      "Content-Type": "application/json",
+      ...options.Headers,
+    },
+  };
+  const response = await fetch(fetchUrl, fetchOptionsWithHeaders);
 
-    if (hasBody && !(body instanceof FormData)) {
-      headers.set("Content-Type", "application/json");
-    }
-
-    const token = localStorage.getItem("token");
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-
-    const requestBody =
-      hasBody && typeof body !== "string" && !(body instanceof FormData)
-        ? JSON.stringify(body)
-        : body;
-
-    const response = await fetch(buildUrl(endpoint), {
-      ...rest,
-      headers,
-      body: hasBody ? requestBody : undefined,
-    });
-
-    if (response.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
-    } else if (response.status === 403) {
-      window.location.href = "/unauthorized";
-    }
-
-    if (!response.ok) {
-      let message = "An error occurred while fetching data.";
-      try {
-        const errorData = await response.json();
-        message = errorData?.message || errorData?.error || message;
-      } catch {
-        const text = await response.text().catch(() => "");
-        if (text) {
-          message = text;
-        }
-      }
-      throw new Error(message);
-    }
-
-    const contentType = response.headers.get("content-type") || "";
-    if (contentType.includes("application/json")) {
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
-    }
-
-    return response.text();
-  } catch (error) {
-    const message = error.message || "An error occurred while fetching data.";
-    throw new Error(message, { cause: error });
+  if (!response.ok) {
+    throw new Error(`HTTP error! statuse: ${response.status}`);
   }
+  return response.json();
 };
