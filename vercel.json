@@ -1,11 +1,27 @@
 {
-  "functions": {
-    "backend/index.js": {
-      "runtime": "vercel-node@latest"
-    }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/index.js" },
-    { "source": "/(.*)", "destination": "/frontend/$1" }
-  ]
+    "services": {
+        "frontend": {
+            "root": "frontend",
+            "framework": "vite"
+        },
+        "backend": {
+            "root": "backend"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api(/.*)?",
+            "destination": {
+                "type": "service",
+                "service": "backend"
+            }
+        },
+        {
+            "source": "/(.*)",
+            "destination": {
+                "type": "service",
+                "service": "frontend"
+            }
+        }
+    ]
 }
