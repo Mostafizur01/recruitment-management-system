@@ -1,0 +1,11 @@
+{
+  "name": "recruitment-management-system",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm --prefix frontend run build"
+  }
+}
