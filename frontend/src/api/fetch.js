@@ -1,16 +1,13 @@
 const getBaseUrl = () => {
-  const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
-
-  if (configuredBaseUrl) {
-    return configuredBaseUrl.replace(/\/$/, "");
-  }
-
-  return "/api";
+  return (
+    import.meta.env.VITE_BACKEND_URL ||
+    import.meta.env.LOCAL_BACKEND_URL ||
+    "http://localhost:3000" 
+  );
 };
 
 export const fetchApi = async (endpoint, options = {}) => {
-  const baseUrl = getBaseUrl();
-  const url = `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const url = `${getBaseUrl()}${endpoint}`;
 
   const headers = {
     "Content-Type": "application/json",

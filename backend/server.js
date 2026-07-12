@@ -21,28 +21,30 @@ const port = process.env.PORT || 3000;
 const corsOptions = {
   origin:
     process.env.FRONTEND_URL ||
-    process.env.FRONTEND_URL_LOCAL ||
-    "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    "https://recruitment-management-system-1-id3s.onrender.com" ||
+    process.env.FRONTEND_URL_LOCAL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+  Credentials: true,
 };
 
 app.use(cors(corsOptions));
+
 mongoDB();
 
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
 
-app.use("/api/logReg", logRegRoutes);
-app.use("/api/position", positionRoutes);
-app.use("/api/positions", positionRoutes);
-app.use("/api/cvs", cvRoutes);
-app.use("/api/attribute", attributeRoutes);
-app.use("/api/dashboard", dashboardRouter);
-app.use("/api/applications", applicationRoutes);
-app.use("/api/users", userRoutes);
+app.use("/logReg", logRegRoutes);
+app.use("/position", positionRoutes);
+app.use("/positions", positionRoutes);
+app.use("/cvs", cvRoutes);
+app.use("/attribute", attributeRoutes);
+app.use("/dashboard", dashboardRouter);
+app.use("/applications", applicationRoutes);
+app.use("/users", userRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
@@ -50,10 +52,6 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-if (!process.env.VERCEL) {
-  app.listen(port, () => {
-    console.log(`Server run at http://localhost:${port}`);
-  });
-}
-
-export default app;
+app.listen(port, () => {
+  console.log(`Server run at http://localhost:${port}`);
+});
