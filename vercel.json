@@ -13,14 +13,14 @@
             "source": "/api(/.*)?",
             "destination": {
                 "type": "service",
-                "service": "server.js"
+                "service": "backend"
             }
         },
         {
             "source": "/(.*)",
             "destination": {
                 "type": "service",
-                "service": "index.html"
+                "service": "frontend"
             }
         }
     ]
