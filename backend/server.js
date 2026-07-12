@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
 const corsOptions = {
   origin:
     process.env.FRONTEND_URL ||
-    "https://recruitment-management-system-1-id3s.onrender.com" ||
+    "https://recruitment-management-system-eight.vercel.app" ||
     process.env.FRONTEND_URL_LOCAL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
