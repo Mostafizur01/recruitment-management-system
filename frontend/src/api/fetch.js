@@ -1,9 +1,5 @@
 const getBaseUrl = () => {
-  return (
-    import.meta.env.VITE_BACKEND_URL ||
-    import.meta.env.LOCAL_BACKEND_URL ||
-    "http://localhost:3000" 
-  );
+  return "/api";
 };
 
 export const fetchApi = async (endpoint, options = {}) => {
