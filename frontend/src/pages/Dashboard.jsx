@@ -60,7 +60,7 @@ export default function Dashboard() {
 
       <div className="bg-white p-6 rounded-xl shadow-sm border h-80">
         <h3 className="font-bold mb-4">
-          Position Distribution (Active vs Closed)
+          Position Distribution
         </h3>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

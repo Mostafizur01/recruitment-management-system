@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   "/",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader", "Candidate"]),
+  verifyRole(["admin", "recruiter", "leader", "candidate"]),
   getAllApplications,
 );
 router.post(
@@ -28,13 +28,13 @@ router.post(
 router.put(
   "/:id",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
+  verifyRole(["admin", "recruiter", "leader"]),
   updateApplication,
 );
 router.delete(
   "/:id",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
+  verifyRole(["admin", "recruiter", "leader"]),
   deleteApplication,
 );
 

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  createCV,
   getAllCVs,
   updateCV,
   getCandidateCv,
@@ -11,17 +12,20 @@ import { updateCVValidation } from "../validators/cvValidators.js";
 
 const router = express.Router();
 
-router.get(
-  "/",
-  verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
-  getAllCVs,
-);
+// Get all CVs - Only Admin and Recruiter
+router.get("/", verifyToken, verifyRole(["admin", "recruiter"]), getAllCVs);
+
+// Create CV - Only Candidate
+router.post("/create", verifyToken, verifyRole(["candidate"]), createCV);
+
+// Get single CV - Candidate (owner), Admin, and Recruiter (view-only)
 router.get("/:candidateId", verifyToken, getCandidateCv);
+
+// Update CV - Admin Only
 router.put(
   "/update/:candidateId",
   verifyToken,
-  updateCVValidation,
+  verifyRole(["admin"]),
   validateRequest,
   updateCV,
 );

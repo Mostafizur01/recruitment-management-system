@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
 const corsOptions = {
   origin:
     process.env.FRONTEND_URL ||
-    "https://recruitment-management-system-1-id3s.onrender.com" ||
+    // "https://recruitment-management-system-rouge.vercel.app" ||
     process.env.FRONTEND_URL_LOCAL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -32,7 +32,8 @@ app.use(cors(corsOptions));
 
 mongoDB();
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); 
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));

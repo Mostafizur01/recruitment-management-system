@@ -1,7 +1,6 @@
 import { LogAndRegProvider } from "./context/logAndRegContext.jsx";
 import { Route, Routes, BrowserRouter, Navigate } from "react-router-dom";
 
-// Components & Pages
 import DashboardLayout from "./layout/DashboardLayout.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
@@ -17,7 +16,6 @@ import CVEdit from "./pages/CVEdit.jsx";
 import MyCV from "./pages/MyCV.jsx";
 import Profile from "./pages/Profile.jsx";
 
-// Auth Hooks
 import ProtectedRoute from "./hooks/ProtectedRoute.jsx";
 import RoleRoute from "./components/RoleRoute.jsx";
 
@@ -55,7 +53,10 @@ export default function App() {
             />
 
             {/* Application Routes */}
-            <Route path="applications/apply/:positionId" element={<Application />} />
+            <Route
+              path="applications/apply/:positionId"
+              element={<Application />}
+            />
             <Route
               path="applications/list"
               element={
@@ -65,9 +66,18 @@ export default function App() {
               }
             />
 
-            {/* CV & Profile Routes */}
-            <Route path="my-cv" element={<MyCV />} />
+            {/* CV Routes */}
+            <Route
+              path="my-cv"
+              element={
+                <RoleRoute allowedRoles={["candidate", "admin"]}>
+                  <MyCV />
+                </RoleRoute>
+              }
+            />
+
             <Route path="profile/me" element={<Profile />} />
+
             <Route
               path="cvs"
               element={
@@ -76,17 +86,17 @@ export default function App() {
                 </RoleRoute>
               }
             />
-            <Route 
-              path="cvs/edit/:candidateId" 
+
+            <Route
+              path="cvs/edit/:candidateId"
               element={
-                <RoleRoute allowedRoles={["admin", "recruiter"]}>
+                <RoleRoute allowedRoles={["admin"]}>
                   <CVEdit />
                 </RoleRoute>
-              } 
+              }
             />
           </Route>
 
-          {/* Catch all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </LogAndRegProvider>

@@ -2,7 +2,20 @@ import CV from "../models/cv.js";
 
 export const getCandidateCv = async (req, res) => {
   try {
-    const candidateId = req.params.candidateId;
+    const { candidateId } = req.params;
+    const { id: loggedInUserId, role } = req.user;
+
+    const userRole = String(role).trim().toLowerCase();
+    const isOwner = loggedInUserId === candidateId;
+    const isAdmin = userRole === "admin";
+    const isRecruiter = userRole === "recruiter";
+
+    if (!isOwner && !isAdmin && !isRecruiter) {
+      return res
+        .status(403)
+        .json({ message: "You don't have permission to access this CV" });
+    }
+
     const cv = await CV.findOne({ candidateId });
     if (!cv) {
       return res
@@ -10,66 +23,105 @@ export const getCandidateCv = async (req, res) => {
         .json({ message: "CV not found for this candidate" });
     }
 
-    const userRole = String(req.user.role).toLowerCase();
-    const isOwner = req.user.id === candidateId;
-    const isAdmin = ["admin", "recruiter", "leader"].includes(userRole);
-
-    if (!isOwner && !isAdmin) {
-      return res.status(403).json({ message: "Forbidden to access this CV" });
-    }
-
     return res.json(cv);
   } catch (error) {
-    console.error("the error is on getCandidateCV", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const createCV = async (req, res) => {
+  try {
+    const { id: userId, role } = req.user;
+    const userRole = String(role).trim().toLowerCase();
+
+    if (userRole !== "candidate") {
+      return res
+        .status(403)
+        .json({ message: "Only candidates can create CVs" });
+    }
+
+    const { cvData, positionId } = req.body;
+
+    if (!cvData) {
+      return res.status(400).json({ message: "cvData is required" });
+    }
+
+    const existingCV = await CV.findOne({ candidateId: userId });
+    if (existingCV) {
+      return res
+        .status(409)
+        .json({ message: "CV already exists. Use update instead." });
+    }
+
+    const newCV = new CV({
+      candidateId: userId,
+      cvData,
+      version: 1,
+      ...(positionId ? { positionId } : {}),
+    });
+
+    const savedCV = await newCV.save();
+    return res.status(201).json(savedCV);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to create CV" });
   }
 };
 
 export const updateCV = async (req, res) => {
   try {
     const { candidateId } = req.params;
-    const { cvData, version } = req.body;
+    const { role } = req.user;
+    const userRole = String(role).trim().toLowerCase();
 
-    const cv = await CV.findOne({ candidateId });
-    if (!cv) {
+    if (userRole !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Only administrators can edit CVs" });
+    }
+
+    const existingCV = await CV.findOne({ candidateId });
+    if (!existingCV) {
       return res.status(404).json({ message: "CV not found" });
     }
 
-    const userRole = String(req.user.role).toLowerCase();
-    const isOwner = req.user.id === candidateId;
-    const isAdmin = ["admin", "recruiter", "leader"].includes(userRole);
-    if (!isOwner && !isAdmin) {
-      return res.status(403).json({ message: "Forbidden to update this CV" });
+    const { cvData, positionId } = req.body;
+
+    const updateData = {
+      cvData: cvData || existingCV.cvData,
+      version: (existingCV.version || 1) + 1,
+    };
+
+    if (positionId) {
+      updateData.positionId = positionId;
     }
 
-    if (cv.version !== version) {
-      return res
-        .status(409)
-        .json({ message: "Data outdated. Please refresh." });
-    }
+    const updatedCV = await CV.findOneAndUpdate({ candidateId }, updateData, {
+      new: true,
+    });
 
-    cv.cvData = cvData;
-    cv.version = version + 1;
-
-    await cv.save();
-
-    return res.status(200).json({ message: "CV updated successfully", cv });
+    return res.status(200).json(updatedCV);
   } catch (error) {
-    console.error("the problem is on cvController", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Failed to update CV" });
   }
 };
 
 export const getAllCVs = async (req, res) => {
   try {
-    const allCV = await CV.find().populate("candidateId");
-    res.status(200).json(allCV);
+    const { role } = req.user;
+    const userRole = String(role).trim().toLowerCase();
+
+    if (!["admin", "recruiter"].includes(userRole)) {
+      return res
+        .status(403)
+        .json({ message: "You don't have permission to access all CVs" });
+    }
+
+    const allCVs = await CV.find()
+      .populate("candidateId", "firstName lastName email role location Photo")
+      .populate("positionId", "title company");
+
+    return res.status(200).json(allCVs);
   } catch (error) {
-    console.error("the problem is on getAllCVs", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

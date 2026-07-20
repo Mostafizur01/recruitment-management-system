@@ -10,7 +10,7 @@ export const useAutoSave = (data, endpoint, onConflict) => {
         try {
           await fetchApi(endpoint, {
             method: "PUT",
-            body: JSON.stringify(currentData),
+            body: currentData,
           });
         } catch (err) {
           const message = String(err.message || "");

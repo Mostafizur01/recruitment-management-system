@@ -3,25 +3,24 @@ import { Navigate } from "react-router-dom";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue.js";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 
-export default function RoleRoute({ children, allowedRoles }) {
-  const { user, loading } = useContext(LogAndRegContext);
+export default function CVRoute({ children, allowRoles = [] }) {
+  const { user, token, loading } = useContext(LogAndRegContext);
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (!user) {
+  if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
 
   const userRole = String(user?.role || "")
     .trim()
     .toLowerCase();
-  const isAuthorized = allowedRoles.some(
-    (role) => String(role).trim().toLowerCase() === userRole,
-  );
 
-  if (!isAuthorized) {
+  const isAllowed = allowRoles.length === 0 || allowRoles.includes(userRole);
+
+  if (!isAllowed) {
     return <Navigate to="/unauthorized" replace />;
   }
 

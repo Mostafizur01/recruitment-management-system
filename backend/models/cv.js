@@ -10,7 +10,6 @@ const cvSchema = mongoose.Schema(
     positionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Position",
-      required: true,
     },
     cvData: {
       type: Map,

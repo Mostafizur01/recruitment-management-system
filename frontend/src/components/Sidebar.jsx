@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LogAndRegContext } from "../hooks/logAndRegContextValue";
+import { fetchApi } from "../api/fetch";
 
 export default function Sidebar({
   isOpen,
@@ -10,10 +11,35 @@ export default function Sidebar({
 }) {
   const { user, logOut, token } = useContext(LogAndRegContext);
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+
+  const userRole = String(user?.role || "")
+    .trim()
+    .toLowerCase();
 
   const handleMobileMenuClick = () => {
     navigate("/");
   };
+  useEffect(() => {
+    const userId = user?._id || user?.id;
+
+    const loadProfilePhoto = async () => {
+      if (!userId) return;
+      try {
+        const response = await fetchApi(`/users/me`);
+        if (response) {
+          setProfile(response);
+        }
+      } catch (error) {
+        // Handle error silently
+        console.error("Error loading profile photo:", error);
+      }
+    };
+
+    if (token) {
+      loadProfilePhoto();
+    }
+  }, [token]);
 
   return (
     <>
@@ -43,7 +69,7 @@ export default function Sidebar({
 
         <nav className="flex-1 p-4 space-y-4">
           <SidebarLink to="/" icon="📊" label="Dashboard" isOpen={isOpen} />
-          {user?.role?.toLowerCase() === "candidate" && (
+          {userRole === "candidate" && (
             <SidebarLink to="/my-cv" icon="📄" label="My CV" isOpen={isOpen} />
           )}
           <SidebarLink
@@ -52,7 +78,7 @@ export default function Sidebar({
             label="Positions"
             isOpen={isOpen}
           />
-          {user?.role?.toLowerCase() !== "candidate" && (
+          {userRole !== "candidate" && (
             <SidebarLink
               to="/applications/list"
               icon="📋"
@@ -60,7 +86,7 @@ export default function Sidebar({
               isOpen={isOpen}
             />
           )}
-          {user?.role?.toLowerCase() !== "candidate" && (
+          {userRole !== "candidate" && (
             <SidebarLink
               to="/cvs"
               icon="📄"
@@ -74,9 +100,9 @@ export default function Sidebar({
           <div className="p-4 border-t border-slate-700">
             <Link to="/profile/me" className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden shrink-0">
-                {user?.profilePic ? (
+                {profile?.Photo ? (
                   <img
-                    src={user.profilePic}
+                    src={profile.Photo}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -127,3 +153,4 @@ function SidebarLink({ to, icon, label, isOpen }) {
     </Link>
   );
 }
+  

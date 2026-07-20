@@ -3,9 +3,9 @@ export const verifyRole = (allowedRoles) => {
     if (!req.user?.role) {
       return res.status(401).json({ message: "User role missing" });
     }
-    const userRole = String(req.user.role).toLowerCase();
+    const userRole = String(req.user.role).trim().toLowerCase();
     const normalizedRoles = allowedRoles.map((role) =>
-      String(role).toLowerCase(),
+      String(role).trim().toLowerCase(),
     );
     if (!normalizedRoles.includes(userRole)) {
       return res.status(403).json({ message: "You don't have permission" });

@@ -21,7 +21,7 @@ router.get("/:id", getPositionById);
 router.post(
   "/",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
+  verifyRole(["admin", "recruiter", "leader"]),
   createPositionValidation,
   validateRequest,
   createPosition,
@@ -29,7 +29,7 @@ router.post(
 router.put(
   "/:id",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
+  verifyRole(["admin", "recruiter", "leader"]),
   updatePositionValidation,
   validateRequest,
   updatePosition,
@@ -37,7 +37,7 @@ router.put(
 router.delete(
   "/:id",
   verifyToken,
-  verifyRole(["Admin", "Recruiter", "Leader"]),
+  verifyRole(["admin", "recruiter", "leader"]),
   deletePosition,
 );
 

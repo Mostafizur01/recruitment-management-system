@@ -11,7 +11,9 @@ export default function PositionDetails() {
   const { user } = useContext(LogAndRegContext);
   const [data, setData] = useState(null);
 
-  const userRole = user?.role?.toLowerCase();
+  const userRole = String(user?.role || "")
+    .trim()
+    .toLowerCase();
   const canEdit = ["admin", "recruiter", "leader"].includes(userRole);
   const canApply = userRole === "candidate";
 
@@ -19,7 +21,7 @@ export default function PositionDetails() {
     fetchApi(`/position/${id}`)
       .then(setData)
       .catch((error) => {
-        console.error("Unable to load position details:", error);
+        // Handle error silently
       });
   }, [id]);
 

@@ -17,7 +17,9 @@ export default function PositionList() {
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("user"))
       : null;
-  const userRole = storedUser?.role?.toLowerCase();
+  const userRole = String(storedUser?.role || "")
+    .trim()
+    .toLowerCase();
   const isAuthorized = ["admin", "recruiter", "leader"].includes(userRole);
 
   const loadPositions = async () => {
@@ -25,7 +27,7 @@ export default function PositionList() {
       const data = await fetchApi("/position");
       setPositions(data);
     } catch (error) {
-      console.error("Failed to load positions:", error);
+      // Handle error silently
     }
   };
 

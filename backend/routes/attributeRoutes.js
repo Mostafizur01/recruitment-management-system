@@ -12,7 +12,7 @@ router.get("/", getAttribute);
 router.post(
   "/",
   verifyToken,
-  verifyRole(["Admin", "Recruiter"]),
+  verifyRole(["admin", "recruiter"]),
   createAttribute,
 );
 

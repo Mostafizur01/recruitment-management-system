@@ -7,8 +7,7 @@ export const getAllApplications = async (req, res) => {
       .populate("candidateId");
     res.status(200).json(applications);
   } catch (error) {
-    console.error("problem on getAllApplications", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -25,10 +24,7 @@ export const createApplication = async (req, res) => {
     await application.save();
     return res.status(201).json(application);
   } catch (error) {
-    console.error("problem on createApplication", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -41,8 +37,7 @@ export const updateApplication = async (req, res) => {
     );
     res.status(200).json(updatedApplication);
   } catch (error) {
-    console.error("problem on updateApplication", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -51,7 +46,6 @@ export const deleteApplication = async (req, res) => {
     await Application.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Application deleted successfully" });
   } catch (error) {
-    console.error("problem on deleteApplication", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

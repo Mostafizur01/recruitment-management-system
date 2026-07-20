@@ -18,7 +18,7 @@ export default function PositionEdit() {
         const result = await fetchApi(`/position/${id}`);
         setData(result);
       } catch (err) {
-        console.error("Failed to load:", err);
+        // Handle error silently
       } finally {
         setLoading(false);
       }
