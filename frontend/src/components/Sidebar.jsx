@@ -31,7 +31,6 @@ export default function Sidebar({
           setProfile(response);
         }
       } catch (error) {
-        // Handle error silently
         console.error("Error loading profile photo:", error);
       }
     };

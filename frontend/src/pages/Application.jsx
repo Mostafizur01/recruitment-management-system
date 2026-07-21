@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchApi } from "../api/fetch.js";
 
 export default function Application() {
   const { positionId } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     applicantName: "",
     email: "",
@@ -63,6 +64,7 @@ export default function Application() {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-3 rounded font-bold hover:bg-blue-700"
+            onClick={navigate(`positions/${positionId}`)}
           >
             Submit Application
           </button>

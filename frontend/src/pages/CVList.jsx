@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { fetchApi } from "../api/fetch.js";
 import { Link } from "react-router-dom";
+import { LogAndRegContext} from "../hooks/logAndRegContextValue.js"
 
 export default function CVList() {
   const [cvs, setCvs] = useState([]);
+  const { user } =  useContext(LogAndRegContext)
+
+  const userRole = String(user?.role || "").trim().toLowerCase()
 
   useEffect(() => {
     fetchApi("/cvs").then(setCvs);
@@ -29,7 +33,8 @@ export default function CVList() {
                   {cv.candidateId?.lastName || ""}
                 </td>
                 <td className="p-4">{cv.version}</td>
-                <td className="p-4">
+                {userRole !== "recruiter" ? (
+                  <td className="p-4">
                   <Link
                     to={`/cvs/edit/${cv.candidateId?._id}`}
                     className="text-blue-600"
@@ -37,6 +42,9 @@ export default function CVList() {
                     Edit CV
                   </Link>
                 </td>
+                ) : (
+                  <div className="text-blue-500">Active</div>
+                )}
               </tr>
             ))}
           </tbody>

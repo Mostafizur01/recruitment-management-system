@@ -20,7 +20,7 @@ export default function PositionDetails() {
   useEffect(() => {
     fetchApi(`/position/${id}`)
       .then(setData)
-      .catch((error) => {
+      .catch(() => {
         // Handle error silently
       });
   }, [id]);
@@ -36,7 +36,7 @@ export default function PositionDetails() {
     <div className="p-6 max-w-3xl mx-auto">
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 flex items-center gap-2 text-slate-600"
+        className="mb-6 flex items-center select-none cursor-pointer gap-2 text-slate-600"
       >
         <ArrowLeft size={18} /> Back
       </button>
@@ -48,7 +48,7 @@ export default function PositionDetails() {
             {canApply && (
               <button
                 onClick={() => navigate(`/applications/apply/${id}`)}
-                className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg"
+                className="bg-emerald-50 select-none cursor-pointer text-emerald-700 px-4 py-2 rounded-lg"
               >
                 Apply
               </button>
@@ -56,7 +56,7 @@ export default function PositionDetails() {
             {canEdit && (
               <button
                 onClick={() => navigate(`/positions/edit/${id}`)}
-                className="bg-blue-50 text-blue-600 p-2 rounded-lg"
+                className="bg-blue-50 select-none cursor-pointer text-blue-600 p-2 rounded-lg"
               >
                 <Edit size={20} />
               </button>
